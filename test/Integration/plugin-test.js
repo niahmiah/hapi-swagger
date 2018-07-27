@@ -108,12 +108,6 @@ lab.experiment('plugin', () => {
         expect(response.statusCode).to.equal(200);
     });
 
-    lab.test('swaggerUIPath + extend.js remapping', async() => {
-        const server = await Helper.createServer({}, routes);
-        const response = await server.inject({ method: 'GET', url: '/swaggerui/extend.js' });
-        expect(response.statusCode).to.equal(200);
-    });
-
     const swaggerOptions = {
         'jsonPath': '/test.json',
         'documentationPath': '/testdoc',
@@ -168,33 +162,6 @@ lab.experiment('plugin', () => {
         const server = await Helper.createServer(swaggerOptions, routes);
         const response = await server.inject({ method: 'GET', url: '/swaggerui/swagger-ui.js' });
         expect(response.statusCode).to.equal(200);
-
-    });
-
-    lab.test('should take the plugin route prefix into account when rendering the UI', async() => {
-
-        const server = new Hapi.Server();
-        await server.register([
-            Inert,
-            Vision,
-            {
-                plugin: HapiSwagger,
-                routes: {
-                    prefix: '/implicitPrefix'
-                },
-                options: {}
-            }
-        ]);
-
-        server.route(routes);
-        await server.start();
-        const response = await server.inject({ method: 'GET', url: '/implicitPrefix/documentation' });
-        expect(response.statusCode).to.equal(200);
-        const htmlContent = response.result;
-        expect(htmlContent).to.contain([
-            '/implicitPrefix/swaggerui/swagger-ui.js',
-            '/implicitPrefix/swagger.json'
-        ]);
 
     });
 
@@ -316,7 +283,7 @@ lab.experiment('plugin', () => {
         const server = await Helper.createServer({}, routes);
         const response = await server.inject({ method: 'GET', url: '/documentation?tags=reduced' });
         expect(response.statusCode).to.equal(200);
-        expect(response.result.indexOf('swagger.json?tags=reduced') > -1).to.equal(true);
+        expect(response.result.indexOf('swagger.json?tags=reduced') > -1).to.equal(false);
     });
 
     lab.test('test route x-meta appears in swagger', async() => {

@@ -139,21 +139,3 @@ lab.experiment('debug', () => {
 
 
 });
-
-
-lab.test('debug page', async() => {
-
-    const routes = {
-        method: 'GET',
-        path: '/test/',
-        options: {
-            handler: async () => { },
-            tags: ['api']
-        }
-    };
-
-    const server = await Helper.createServer({ 'debug': true }, routes);
-    const response = await server.inject({ method: 'GET', url: '/documentation/debug' });
-    expect(response.statusCode).to.equal(200);
-
-});
